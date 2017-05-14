@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Robot Academy Remote Control App</string>
+
+    <string name="connect">Подключение</string>
+</resources>
