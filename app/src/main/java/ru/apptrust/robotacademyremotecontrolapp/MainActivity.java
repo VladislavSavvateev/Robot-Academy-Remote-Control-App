@@ -29,9 +29,9 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
-    BluetoothSocket socket;
-    InputStream is;
-    OutputStream os;
+    static BluetoothSocket socket;
+    static InputStream is;
+    static OutputStream os;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
