@@ -6,9 +6,15 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventCallback;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     static InputStream is;
     static OutputStream os;
 
+    public Sensor sensor;
+
     public TextView speed;
     public TextView speedBytes;
 
@@ -44,6 +52,10 @@ public class MainActivity extends AppCompatActivity {
         this.speedBytes = (TextView) this.findViewById(R.id.speedBytes);
         speed.setText("0");
         speedBytes.setText("0");
+
+        SensorManager sm = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensor = sm.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        sm.registerListener(new SensorValueSender(), sensor, 50000);
     }
 
     @Override
@@ -151,6 +163,66 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public class SensorValueSender implements SensorEventListener {
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            if (socket != null) {
+                float rot = event.values[2];
+
+                // обработка мёртвой зоны
+                if (Math.abs(rot) > 10) {
+                    if (Math.signum(rot) == 1) rot -= 10;
+                    else rot += 10;
+                    rot = (10 * rot) / 8;
+                } else rot = 0;
+                //rot = -rot; // раскомментировать, если будет поворачивать не в ту сторону
+                try { sendRotateEngine((byte) rot); } catch (Throwable ignored) {}
+                // Log.d("GYRO", "rot: " + rot); // debug
+            }
+        }
+
+        void sendRotateEngine(byte speed) throws Throwable {
+            byte by = 2;
+            byte by2 = speed;
+            byte[] arr = new byte[]{13, 0, 0, 0, -128, 0, 0, -92, 0, by, -127, by2, -90, 0, by};
+
+        /*
+        byte[] arr = new byte[14];
+        arr[0] = 12;
+        arr[1] = 0;
+
+        arr[2] = 0;
+        arr[3] = 0;
+
+        arr[4] = -128;
+
+        arr[5] = 0;
+        arr[6] = 0;
+
+        arr[7] = -91;
+        arr[8] = 0;
+        arr[9] = 1;
+        arr[10] = 50; // speed
+
+        arr[11] = -90;
+        arr[12] = 0; // порт
+        arr[13] = 1;
+        arr[10] = speed;
+
+        arr[11] = -90;
+        arr[12] = 0;
+        arr[13] = 1;
+        */
+
+            // Log.d("DEBUG", printByteArray(arr)); // debug
+            MainActivity.os.write(arr);
+            MainActivity.os.flush();
+        }
     }
 }
 
