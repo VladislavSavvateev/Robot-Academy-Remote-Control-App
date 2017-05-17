@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -14,6 +15,7 @@ import android.view.View;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.util.Arrays;
 
 /**
  * Created by rares on 14.05.2017.
@@ -80,6 +82,10 @@ public class SpeedTrackSlider extends View {
             }
         }
 
+        ((MainActivity) this.getContext() ).speed.setText(String.valueOf(speed));
+        Byte text = (byte) speed;
+        ((MainActivity) this.getContext() ).speedBytes.setText(Byte.toString((byte) speed))
+          
         try {
             if (MainActivity.socket != null) sendSpeedEngine((byte) speed);
         } catch (Throwable ignored) {}
@@ -88,6 +94,11 @@ public class SpeedTrackSlider extends View {
     }
 
     void sendSpeedEngine(byte speed) throws Throwable {
+        byte by = 1;
+        byte by2 = speed;
+        byte[] arr = new byte[]{13, 0, 0, 0, -128, 0, 0, -92, 0, by, -127, by2, -90, 0, by};
+
+        /*
         byte[] arr = new byte[14];
         arr[0] = 12;
         arr[1] = 0;
@@ -103,6 +114,12 @@ public class SpeedTrackSlider extends View {
         arr[7] = -91;
         arr[8] = 0;
         arr[9] = 1;
+        arr[10] = 50; // speed
+
+        arr[11] = -90;
+        arr[12] = 0; // порт
+        arr[13] = 1;
+         */
         arr[10] = speed;
 
         arr[11] = -90;
