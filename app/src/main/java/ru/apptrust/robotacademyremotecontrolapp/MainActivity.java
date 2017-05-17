@@ -27,14 +27,21 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
-    BluetoothSocket socket;
-    InputStream is;
-    OutputStream os;
+    static BluetoothSocket socket;
+    static InputStream is;
+    static OutputStream os;
+
+    public TextView speed;
+    public TextView speedBytes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.speed = (TextView) this.findViewById(R.id.speed);
+        this.speedBytes = (TextView) this.findViewById(R.id.speedBytes);
+        speed.setText("0");
+        speedBytes.setText("0");
     }
 
     @Override
