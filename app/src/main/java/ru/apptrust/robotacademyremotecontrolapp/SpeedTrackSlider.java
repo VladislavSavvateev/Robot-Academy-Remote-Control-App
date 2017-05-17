@@ -84,8 +84,8 @@ public class SpeedTrackSlider extends View {
 
         ((MainActivity) this.getContext() ).speed.setText(String.valueOf(speed));
         Byte text = (byte) speed;
-        ((MainActivity) this.getContext() ).speedBytes.setText(Byte.toString((byte) speed));
-
+        ((MainActivity) this.getContext() ).speedBytes.setText(Byte.toString((byte) speed))
+          
         try {
             if (MainActivity.socket != null) sendSpeedEngine((byte) speed);
         } catch (Throwable ignored) {}
@@ -120,6 +120,11 @@ public class SpeedTrackSlider extends View {
         arr[12] = 0; // порт
         arr[13] = 1;
          */
+        arr[10] = speed;
+
+        arr[11] = -90;
+        arr[12] = 0;
+        arr[13] = 1;
 
         // Log.d("DEBUG", printByteArray(arr)); // debug
         MainActivity.os.write(arr);

@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Intent;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -56,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.main_activity_connect:
                 final BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
+                if (!ba.isEnabled()) {
+                    Toast.makeText(this, "Пожалуйста, включите Bluetooth!", Toast.LENGTH_LONG).show();
+                    Intent i = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
+                    startActivity(i);
+                    break;
+                }
                 ba.startDiscovery();
                 final LayoutInflater li = LayoutInflater.from(this);
                 View v = li.inflate(R.layout.connect_layout, null);
