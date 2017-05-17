@@ -119,12 +119,12 @@ public class SpeedTrackSlider extends View {
         arr[11] = -90;
         arr[12] = 0; // порт
         arr[13] = 1;
-         */
         arr[10] = speed;
 
         arr[11] = -90;
         arr[12] = 0;
         arr[13] = 1;
+        */
 
         // Log.d("DEBUG", printByteArray(arr)); // debug
         MainActivity.os.write(arr);
